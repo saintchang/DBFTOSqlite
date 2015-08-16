@@ -1,0 +1,24 @@
+﻿Sub createSQLByScript()
+    Dim fso, ts As Object
+    Dim myFile, cellValue, sql, fieldName, fieldType, fieldLength, lineStr As String
+    Dim iRow, iCol As Integer
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    myFile = ActiveWorkbook.Path & "\" & ActiveSheet.Name & ".sql"
+    Set ts = fso.CreateTextFile(myFile, True)
+    iRow = 2
+    iCol = 5
+    sql = "CREATE TABLE " & Range("g1").Value & "("
+    ts.writelIne (sql)
+    Do While Cells(iRow, iCol) <> Empty
+        fieldName = Cells(iRow, 1).Value
+        cellValue = Cells(iRow, iCol).Value
+        fieldType = getDataType(Cells(iRow, 2).Value)
+        fieldLength = getDataLength(Cells(iRow, 2).Value, Cells(iRow, 5).Value)
+        lineStr = fieldName & " " & fieldType & fieldLength
+        ts.writelIne (IIf(iRow = 2, " ", ",") & lineStr)
+        iRow = iRow + 1
+    Loop
+    ts.writelIne (")")
+    ts.Close
+    MsgBox ("完成!")
+End Sub
